@@ -7,33 +7,40 @@ namespace PLINQ_Benchmark
 {
     class Program
     {
+        public static ConsoleViewManager cvm = new ConsoleViewManager();
         static void Main(string[] args)
         {
-            var vals = LoadList("valsmore.cvs");
+            var vals = LoadList("vals2.csv");
             List<long> lst = new List<long>();
+
             Console.WriteLine("Running on a system with {0} logical cores", System.Environment.ProcessorCount);
             Console.WriteLine("Press enter to start");
             Console.ReadLine();
             Console.WriteLine("Starting evaluation");
-            for (int i = 1; i < 6; i++)
+            for (int i = 7; i < 8; i++)
             {
                 var time = ProcessList(vals, i);
                 lst.Add(time);
-                Console.WriteLine("Using {0} core(s) took {1} ms", i.ToString(), time.ToString());
+                Program.cvm.WriteLine("Using {0} core(s) took {1} ms", i.ToString(), time.ToString());
             }
             SaveList(lst, "results.cvs");
-            //Console.ReadLine();
+            Console.ReadLine();
             
         }
 
         static long ProcessList(List<long> lst, int plvl)
         {
             StatCounter sc = new StatCounter();
+            foreach (long num in lst)
+            {
+                Program.cvm.AddTask(num);
+            }
             sc.start();
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
-            var result = from p in lst.AsParallel().WithDegreeOfParallelism(plvl)
-                         select pfac.prime_factorization(p);
+            var lstP =  System.Collections.Concurrent.Partitioner.Create(lst, true);
+            var result = from p in lstP.AsParallel().WithDegreeOfParallelism(plvl).WithExecutionMode(ParallelExecutionMode.ForceParallelism)
+                         select primeFactor(p);
             foreach (var item in result)
             {
                 
@@ -51,6 +58,20 @@ namespace PLINQ_Benchmark
             SaveCSV(counts, headers.ToArray(), string.Format("CPU_Table_P{0}.csv", plvl));
             
             return sw.ElapsedMilliseconds;   
+        }
+
+        private static List<long> primeFactor(long p)
+        {
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            //Console.WriteLine("Starting " + p.ToString() + "at" + System.DateTime.Now.Ticks);
+            Program.cvm.SetWorking(p);
+            sw.Start();
+            var result =  pfac.prime_factorization(p);
+            sw.Stop();
+            //Console.WriteLine("Finished " + p.ToString() + "at" + System.DateTime.Now.Ticks);
+            //Console.WriteLine("It took{0} seconds", sw.ElapsedMilliseconds);
+            Program.cvm.SetDone(p, sw.ElapsedMilliseconds);
+            return result;
         }
 
         static List<long> CreateRandomDoubles(int count)

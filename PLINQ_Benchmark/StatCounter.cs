@@ -8,11 +8,13 @@ namespace PLINQ_Benchmark
 {
     class StatCounter
     {
+        System.Threading.Barrier bar = new System.Threading.Barrier(2);
         public void start()
         {
             running = true;
             System.Threading.Thread t = new System.Threading.Thread(new System.Threading.ThreadStart(startStatCount));
             t.Start();
+            bar.SignalAndWait();
         }
 
         public List<List<float>> end()
@@ -29,9 +31,9 @@ namespace PLINQ_Benchmark
             int logicalCores = Environment.ProcessorCount;
             var p1 = new PerformanceCounter("Processor", "% Processor Time", "_Total", true);
             var lst = new List<PerformanceCounter>();
-            //var p2 = new PerformanceCounter("Processor", "% Processor Time", "0", true);
-            //p3 = new PerformanceCounter("Processor", "% Processor Time", "1", true);
             f.Add(new List<float>());
+
+            bar.SignalAndWait();
             for (int i = 0; i < logicalCores; i++)
             {
                 lst.Add(new PerformanceCounter("Processor", "% Processor Time", i.ToString(), true));
@@ -41,14 +43,19 @@ namespace PLINQ_Benchmark
             while (running)
             {
                 float cpu = p1.NextValue();
-                Console.WriteLine("Processor Total : {0}%",  cpu);
+                List<float> cpuLst = new List<float>();
+                //Console.Write("Processor Total : {0}%",  cpu);
+                cpuLst.Add(cpu);
                 f[0].Add(cpu);
                 for (int i = 0; i < logicalCores; i++)
                 {
                     cpu = lst[i].NextValue();
                     f[i + 1].Add(cpu);
-                    Console.WriteLine("Processor {0} : {1}%", i, cpu);
+                    //Console.Write(" Core: {0} : {1}%", i, cpu);
+                    cpuLst.Add(cpu);
                 }
+                Program.cvm.SetCPUStats(cpuLst);
+                //Console.WriteLine();
                 System.Threading.Thread.Sleep(1000);
             }
         }
