@@ -10,14 +10,14 @@ namespace PLINQ_Benchmark
         public static ConsoleViewManager cvm = new ConsoleViewManager();
         static void Main(string[] args)
         {
-            var vals = LoadList("vals2.csv");
+            var vals = LoadList("valsmore.cvs");
             List<long> lst = new List<long>();
 
             Console.WriteLine("Running on a system with {0} logical cores", System.Environment.ProcessorCount);
             Console.WriteLine("Press enter to start");
             Console.ReadLine();
             Console.WriteLine("Starting evaluation");
-            for (int i = 7; i < 8; i++)
+            for (int i = 2; i < 8; i++)
             {
                 var time = ProcessList(vals, i);
                 lst.Add(time);
@@ -30,6 +30,7 @@ namespace PLINQ_Benchmark
 
         static long ProcessList(List<long> lst, int plvl)
         {
+            cvm.ClearList();
             StatCounter sc = new StatCounter();
             foreach (long num in lst)
             {
@@ -56,7 +57,7 @@ namespace PLINQ_Benchmark
                 headers.Add(string.Format("CPU_{0}_plvl{1}", i - 1, plvl));
             }
             SaveCSV(counts, headers.ToArray(), string.Format("CPU_Table_P{0}.csv", plvl));
-            
+            SaveTaskList(cvm.ListOfTasks, string.Format("TaskData_PLevel{0}.csv", plvl));
             return sw.ElapsedMilliseconds;   
         }
 
@@ -101,6 +102,16 @@ namespace PLINQ_Benchmark
                 sb.Remove(sb.Length - 1, 1);
             }
             System.IO.File.WriteAllText(str, sb.ToString());
+        }
+
+        static void SaveTaskList(List<TaskInfo> lst, string path)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in lst)
+	        {
+                sb.AppendLine(item.ToString());
+	        }
+            System.IO.File.WriteAllText(path, sb.ToString());
         }
 
         static void SaveList(List<float> lst, string str)

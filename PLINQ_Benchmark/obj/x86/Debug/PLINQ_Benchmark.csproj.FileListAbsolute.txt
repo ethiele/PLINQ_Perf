@@ -3,3 +3,8 @@ C:\Users\ethiele\documents\visual studio 2010\Projects\PLINQ_Benchmark\PLINQ_Ben
 C:\Users\ethiele\documents\visual studio 2010\Projects\PLINQ_Benchmark\PLINQ_Benchmark\obj\x86\Debug\ResolveAssemblyReference.cache
 C:\Users\ethiele\documents\visual studio 2010\Projects\PLINQ_Benchmark\PLINQ_Benchmark\obj\x86\Debug\PLINQ_Benchmark.exe
 C:\Users\ethiele\documents\visual studio 2010\Projects\PLINQ_Benchmark\PLINQ_Benchmark\obj\x86\Debug\PLINQ_Benchmark.pdb
+C:\Users\ethiele\Documents\Visual Studio 2010\Projects\PLINQ_Perf\PLINQ_Benchmark\obj\x86\Debug\PLINQ_Benchmark.exe
+C:\Users\ethiele\Documents\Visual Studio 2010\Projects\PLINQ_Perf\PLINQ_Benchmark\obj\x86\Debug\PLINQ_Benchmark.pdb
+C:\Users\ethiele\Documents\Visual Studio 2010\Projects\PLINQ_Perf\PLINQ_Benchmark\bin\Debug\PLINQ_Benchmark.exe
+C:\Users\ethiele\Documents\Visual Studio 2010\Projects\PLINQ_Perf\PLINQ_Benchmark\bin\Debug\PLINQ_Benchmark.pdb
+C:\Users\ethiele\Documents\Visual Studio 2010\Projects\PLINQ_Perf\PLINQ_Benchmark\obj\x86\Debug\ResolveAssemblyReference.cache

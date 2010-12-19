@@ -9,11 +9,28 @@ namespace PLINQ_Benchmark
     {
         List<TaskInfo> TaskList = new List<TaskInfo>();
         List<float> cpuStats;
+        System.Diagnostics.Stopwatch globalSW = new System.Diagnostics.Stopwatch();
         int activeTasks = 0;
+
+        public List<TaskInfo> ListOfTasks
+        {
+            get
+            {
+                return TaskList;
+            }
+        }
+
         public void AddTask(long ID)
         {
             TaskList.Add(new TaskInfo(){ ID= ID, State= TaskState.NotStarted, TimeTaken = 0});
             PrintScreen();
+        }
+
+        public void ClearList()
+        {
+            TaskList.Clear();
+            globalSW.Stop();
+            globalSW.Start();
         }
 
         public void SetWorking(long ID)
@@ -21,6 +38,7 @@ namespace PLINQ_Benchmark
             var result = TaskList.Where(p => p.ID == ID).Single();
             activeTasks++;
             result.State = TaskState.Working;
+            result.Start = globalSW.ElapsedMilliseconds;
             PrintScreen();
         }
 
@@ -30,6 +48,7 @@ namespace PLINQ_Benchmark
             activeTasks--;
             result.State = TaskState.Done;
             result.TimeTaken = TimeTaken;
+            result.End = globalSW.ElapsedMilliseconds;
             PrintScreen();
         }
 
@@ -111,7 +130,14 @@ namespace PLINQ_Benchmark
     {
         public long ID;
         public TaskState State;
+        public long Start;
+        public long End;
         public long TimeTaken;
+
+        public override string ToString()
+        {
+            return ID.ToString() + "," + Start.ToString() + "," + End.ToString();
+        }
     }
 
     public enum TaskState
