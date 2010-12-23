@@ -17,13 +17,14 @@ namespace PLINQ_Benchmark
             Console.WriteLine("Press enter to start");
             Console.ReadLine();
             Console.WriteLine("Starting evaluation");
-            for (int i = 2; i < 8; i++)
+            System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.RealTime;
+            for (int i = 1; i < 8; i++)
             {
                 var time = ProcessList(vals, i);
                 lst.Add(time);
                 Program.cvm.WriteLine("Using {0} core(s) took {1} ms", i.ToString(), time.ToString());
             }
-            SaveList(lst, "results.cvs");
+            SaveList(lst, "results.csv");
             Console.ReadLine();
             
         }
